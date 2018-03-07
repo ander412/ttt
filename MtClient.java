@@ -33,7 +33,7 @@ public class MtClient {
    */
   public static void main(String[] args) {
     try {
-      String hostname = "localhost";
+      String hostname = "10.49.139.149";
       int port = 7654;
 
       System.out.println("Connecting to server on port " + port);
