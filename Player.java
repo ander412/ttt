@@ -26,7 +26,7 @@ import java.util.Scanner;
 public class Player {
   public static void main(String[] args) {
     Player p = new Player();
-    p.starListener();
+    p.startListener();
   }
 
   private String hostname;
@@ -62,12 +62,16 @@ public class Player {
     }
   }
 
-  public void starListener(){
+  public void startListener(){
     System.out.println("*Starting thread*");
     listenerThread.start();
-    System.out.println("Connecting to server on port " + port + "...");
 
-  }
+    System.out.println("Connecting to server on port " + port + "...");
+    Thread.yield();
+    }
+
+
+
 
   public void play(){
 
@@ -75,7 +79,7 @@ public class Player {
     System.out.println(
             "1,2,3"
                     + "\n4,5,6"
-                    + "\n6,7,8\n");
+                    + "\n7,8,9\n");
 
       try{
         String data = keyboard.nextLine();
@@ -88,7 +92,7 @@ public class Player {
 
   //TODO: Add close methods
   public void success(){
-    System.out.println("*Your was response was received by the sever | your move was legitimate*");
+    System.out.println("*Your was response was received by the server | your move was legitimate*");
     System.out.println("Now waiting for your opponents response...");
   }
 
@@ -124,5 +128,10 @@ public class Player {
     catch(Exception e){
       System.out.println(e.getMessage());
     }
+  }
+
+  public void tie() {
+    System.out.println("*YOU TIED*");
+    System.out.println();
   }
 }
