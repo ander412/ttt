@@ -40,17 +40,56 @@ public class MtServer {
       // This is an infinite loop, the user will have to shut it down
       // using control-c
       while (true) {
+        Thread.yield();
         Socket connectionSock = serverSock.accept();
+        Thread.yield();
         // Add this socket to the list
-        socketList.add(connectionSock);
-        // Send to ClientHandler the socket and arraylist of all sockets
-        ClientHandler handler = new ClientHandler(connectionSock, this.socketList);
-        Thread theThread = new Thread(handler);
-        theThread.start();
+        if(connectionSock != null){
+          socketList.add(connectionSock);
+          // Send to ClientHandler the socket and arraylist of all sockets
+          ClientHandler handler = new ClientHandler(this.socketList);
+          Thread.yield();
+          Thread theThread = new Thread(handler);
+          theThread.start();
+          Thread.yield();
+          System.out.println("Conn Thread 1 Started");
+          try{
+            theThread.wait(1000);
+          }
+          catch(Exception e){
+            System.out.println(e.getMessage());
+          }
+          break;
+        }
       }
+
+      while(true) {
+        Thread.yield();
+        Socket connectionSock = serverSock.accept();
+        Thread.yield();
+        // Add this socket to the list
+        if(connectionSock != null){
+          socketList.add(connectionSock);
+          // Send to ClientHandler the socket and arraylist of all sockets
+          ClientHandler handler = new ClientHandler(this.socketList);
+          Thread.yield();
+          Thread theThread = new Thread(handler);
+          theThread.start();
+          Thread.yield();
+          System.out.println("Conn Thread 2 Started");
+          try{
+            theThread.wait(1000);
+          }
+          catch(Exception e){
+            System.out.println(e.getMessage());
+          }
+          break;
+        }
+      }
+
       // Will never get here, but if the above loop is given
       // an exit condition then we'll go ahead and close the socket
-      //serverSock.close();
+      serverSock.close();
     } catch (IOException e) {
       System.out.println(e.getMessage());
     }
