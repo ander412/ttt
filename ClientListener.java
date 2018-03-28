@@ -41,7 +41,7 @@ public class ClientListener implements Runnable {
         // Get data sent from the server
         String serverText = serverInput.readLine();
         if (serverInput != null) {
-          System.out.println("CLIENT DEBUG: " + serverText);
+          //System.out.println("CLIENT DEBUG: " + serverText);
           parseResponse(serverText);
         }
       }
@@ -75,19 +75,13 @@ public class ClientListener implements Runnable {
       player.lose();
       running = false;
     }
+    if(serverResponse.equals("TIE")) {  //You tie
+      player.tie();
+      running = false;
+    }
     else
       System.out.println(serverResponse);
   }
 
-/*
-  private String parseBoardFromResponse(String[] serverResponseLines){
-    String board = "";
-    for(int i = 1; i < serverResponseLines.length; i++){
-      board += serverResponseLines[i];
-    }
-    System.out.println("CLIENT PARSE BOARD DEBUG: " + board);
-    //System.out.println("CLIENT PARSE BOARD DEBUG: " + serverResponseLines[1]);
-    return board;
-  }*/
 
 } // ClientListener for Player
