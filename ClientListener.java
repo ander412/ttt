@@ -41,7 +41,7 @@ public class ClientListener implements Runnable {
         // Get data sent from the server
         String serverText = serverInput.readLine();
         if (serverInput != null) {
-          System.out.println("DEBUG: " + serverText);
+          System.out.println("CLIENT DEBUG: " + serverText);
           parseResponse(serverText);
         }
       }
@@ -51,43 +51,43 @@ public class ClientListener implements Runnable {
   }
 
   private void parseResponse(String serverResponse){
-    String[] serverResponseLines = serverResponse.split("\n");
-    String board = "";
+    //String[] serverResponseLines = serverResponse.split("\n");
+    //String board = "";
 
-    if(serverResponseLines[0].equals("PLAY")){  //Client turn
-      board = parseBoardFromResponse(serverResponseLines);
-      player.play(board);
+    if(serverResponse.equals("PLAY")){  //Client turn
+      player.play();
     }
-    if(serverResponseLines[0].equals("SUCCESS")){ //Action was valid
+    if(serverResponse.equals("SUCCESS")){ //Action was valid
       player.success();
     }
-    if(serverResponseLines[0].equals("FAILURE")){  //Action was invalid
-      board = parseBoardFromResponse(serverResponseLines);
-      player.failure(board);
+    if(serverResponse.equals("FAILURE")){  //Action was invalid
+      player.failure();
     }
-    if(serverResponseLines[0].equals("FINISHED")){  //Other Player leaves
+    if(serverResponse.equals("FINISHED")){  //Other Player leaves
       player.finished();
       running = false;
     }
-    if(serverResponseLines[0].equals("WIN")){  //You win
+    if(serverResponse.equals("WIN")){  //You win
       player.win();
       running = false;
     }
-    if(serverResponseLines[0].equals("LOSE")){  //You lose
-      board = parseBoardFromResponse(serverResponseLines);
-      player.lose(board);
+    if(serverResponse.equals("LOSE")){  //You lose
+      player.lose();
       running = false;
     }
     else
       System.out.println(serverResponse);
   }
 
+/*
   private String parseBoardFromResponse(String[] serverResponseLines){
     String board = "";
     for(int i = 1; i < serverResponseLines.length; i++){
       board += serverResponseLines[i];
     }
+    System.out.println("CLIENT PARSE BOARD DEBUG: " + board);
+    //System.out.println("CLIENT PARSE BOARD DEBUG: " + serverResponseLines[1]);
     return board;
-  }
+  }*/
 
 } // ClientListener for Player

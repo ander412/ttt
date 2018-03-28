@@ -26,6 +26,7 @@ import java.util.Scanner;
 public class Player {
   public static void main(String[] args) {
     Player p = new Player();
+    p.starListener();
   }
 
   private String hostname;
@@ -47,13 +48,12 @@ public class Player {
   private void initNetworking(){
     try{
       //Connect & Create
-      System.out.println("Connecting to server on port " + port + "...");
+      System.out.println("Creating connection objects...");
 
       Socket connectionSock = new Socket(hostname, port);
 
       serverOutput = new DataOutputStream(connectionSock.getOutputStream());
       listenerThread = new Thread(new ClientListener(connectionSock, this));
-      listenerThread.start();
 
       System.out.println("*Client listener created*");
     }
@@ -62,7 +62,14 @@ public class Player {
     }
   }
 
-  public void play(String board){
+  public void starListener(){
+    System.out.println("*Starting thread*");
+    listenerThread.start();
+    System.out.println("Connecting to server on port " + port + "...");
+
+  }
+
+  public void play(){
 
     System.out.println("Please enter the number corresponding to the space you would like to write on");
     System.out.println(
@@ -85,10 +92,10 @@ public class Player {
     System.out.println("Now waiting for your opponents response...");
   }
 
-  public void failure(String board){
+  public void failure(){
     System.out.println("*Your response was received by the sever | your move was NOT legitimate*");
     System.out.println("PLEASE ENTER A LEGAL NUMBER BETWEEN 1-8");
-    play(board);
+    play();
   }
 
   public void finished(){
@@ -99,9 +106,9 @@ public class Player {
     System.out.println("YOU WON!");
   }
 
-  public void lose(String board){
+  public void lose(){
     System.out.println("*YOU LOST!*");
-    System.out.println(board);
+    System.out.println();
   }
 
   public void close(){
