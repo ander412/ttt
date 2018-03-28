@@ -24,11 +24,12 @@ import java.net.Socket;
 
 import java.util.ArrayList;
 
-public class MtServer {
+public class GameServer
+{
   // Maintain list of all client sockets for broadcast
   private ArrayList<Socket> socketList;
 
-  public MtServer() {
+  public GameServer() {
     socketList = new ArrayList<Socket>();
   }
 

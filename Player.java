@@ -17,47 +17,109 @@
  *
  */
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 import java.net.Socket;
 
 import java.util.Scanner;
 
-public class MtClient {
-  /**
-   * main method.
-   * @params not used.
-   */
+public class Player {
   public static void main(String[] args) {
-    try {
-      String hostname = "10.49.139.149";
-      int port = 7654;
+    Player p = new Player();
+  }
 
-      System.out.println("Connecting to server on port " + port);
+
+  String hostname;
+  int port;
+
+  DataOutputStream serverOutput;
+  Thread listenerThread;
+  Scanner keyboard;
+
+
+  public Player(){
+    hostname = "10.49.139.149";
+    port = 7654;
+
+    keyboard = new Scanner(System.in);
+    initNetworking();
+  }
+
+  private void initNetworking(){
+    try{
+      //Connect & Create
+      System.out.println("Connecting to server on port " + port + "...");
+
       Socket connectionSock = new Socket(hostname, port);
 
-      DataOutputStream serverOutput = new DataOutputStream(connectionSock.getOutputStream());
+      serverOutput = new DataOutputStream(connectionSock.getOutputStream());
+      listenerThread = new Thread(new ClientListener(connectionSock, this));
+      listenerThread.start();
 
-      System.out.println("Connection made.");
+      System.out.println("*Connection made*");
+    }
+    catch (IOException e) {
+      System.out.println(e.getMessage();
+    }
+  }
 
-      // Start a thread to listen and display data sent by the server
-      ClientListener listener = new ClientListener(connectionSock);
-      Thread theThread = new Thread(listener);
-      theThread.start();
+  public void play(){
 
-      // Read input from the keyboard and send it to everyone else.
-      // The only way to quit is to hit control-c, but a quit command
-      // could easily be added.
-      Scanner keyboard = new Scanner(System.in);
-      while (true) {
+    System.out.println("Please enter the number corresponding to the space you would like to write on");
+    System.out.println(
+            "1,2,3"
+                    + "\n4,5,6"
+                    + "\n6,7,8\n");
+
+      try{
         String data = keyboard.nextLine();
         serverOutput.writeBytes(data + "\n");
       }
-    } catch (IOException e) {
+      catch(Exception e){
+        System.out.println(e.getMessage());
+      }
+  }
+
+  public void success(String board{
+    System.out.println("*Your was received by the sever | your move was legitimate*");
+    System.out.println("Now waiting for your opponents response...");
+  }
+
+  public void failure(){
+    System.out.println("*Your was received by the sever | your move was NOT legitimate*");
+    System.out.println("PLEASE ENTER A LEGAL NUMBER BETWEEN 1-8");
+    play();
+  }
+
+  public void finished(){
+    System.out.println("*The other user disconnected, therefore you WIN (by default)*");
+    play();
+  }
+
+  public void win(String board){
+    System.out.println("You Won!");
+    System.out.println("PLEASE ENTER A LEGAL NUMBER BETWEEN 1-8");
+    play();
+  }
+
+  public void lose(String board){
+    System.out.println("*Your was received by the sever | your move was NOT legitimate*");
+    System.out.println("PLEASE ENTER A LEGAL NUMBER BETWEEN 1-8");
+    play();
+  }
+
+  public void close(){
+    try {
+      System.out.println("Sending farewell msg to server...");
+      serverOutput.write("GOODBYE".getBytes());
+
+      listenerThread.join();
+      System.out.println("*Thread Closed*");
+
+      System.out.println("GOODBYE");
+    }
+    catch(Exception e){
       System.out.println(e.getMessage());
     }
   }
-} // MtClient
+}

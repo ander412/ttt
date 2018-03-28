@@ -16,12 +16,16 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static javafx.scene.input.KeyCode.PLAY;
+
 
 public class ClientListener implements Runnable {
   private Socket connectionSock = null;
+  private Player player = null;
 
-  ClientListener(Socket sock) {
+  ClientListener(Socket sock, Player player) {
     this.connectionSock = sock;
+    this.player = player;
   }
 
   /**
@@ -35,7 +39,9 @@ public class ClientListener implements Runnable {
         // Get data sent from the server
         String serverText = serverInput.readLine();
         if (serverInput != null) {
-          System.out.println(serverText);
+          //System.out.println(serverText);
+          parseResponse(serverText);
+
         } else {
           // Connection was lost
           System.out.println("Closing connection for socket " + connectionSock);
@@ -47,4 +53,31 @@ public class ClientListener implements Runnable {
       System.out.println("Error: " + e.toString());
     }
   }
-} // ClientListener for MtClient
+
+  private void parseResponse(String serverResponse){
+    if(serverResponse.equals("PLAY")){
+      player.play(serverResponse);
+    }
+    if(serverResponse.equals("SUCCESSFUL")){
+      player.success();
+    }
+    if(serverResponse.equals("FAILURE")){
+      player.failure();
+    }
+    if(serverResponse.equals("FINISHED")){  //Other Player leaves
+      player.finished();
+    }
+    if(serverResponse.equals("WIN")){  //Other Player leaves
+      player.win(serverResponse);
+    }
+    if(serverResponse.equals("LOSE")){  //Other Player leaves
+      player.lose(serverResponse);
+
+    }
+    else
+      System.out.println(serverResponse);
+
+  }
+
+
+} // ClientListener for Player
