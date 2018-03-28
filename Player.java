@@ -28,17 +28,16 @@ public class Player {
     Player p = new Player();
   }
 
+  private String hostname;
+  private int port;
 
-  String hostname;
-  int port;
-
-  DataOutputStream serverOutput;
-  Thread listenerThread;
-  Scanner keyboard;
+  private DataOutputStream serverOutput;
+  private Thread listenerThread;
+  private Scanner keyboard;
 
 
   public Player(){
-    hostname = "10.49.139.149";
+    hostname = "localhost";
     port = 7654;
 
     keyboard = new Scanner(System.in);
@@ -56,14 +55,14 @@ public class Player {
       listenerThread = new Thread(new ClientListener(connectionSock, this));
       listenerThread.start();
 
-      System.out.println("*Connection made*");
+      System.out.println("*Client listener created*");
     }
     catch (IOException e) {
-      System.out.println(e.getMessage();
+      System.out.println(e.getMessage());
     }
   }
 
-  public void play(){
+  public void play(String board){
 
     System.out.println("Please enter the number corresponding to the space you would like to write on");
     System.out.println(
@@ -80,32 +79,29 @@ public class Player {
       }
   }
 
-  public void success(String board{
-    System.out.println("*Your was received by the sever | your move was legitimate*");
+  //TODO: Add close methods
+  public void success(){
+    System.out.println("*Your was response was received by the sever | your move was legitimate*");
     System.out.println("Now waiting for your opponents response...");
   }
 
-  public void failure(){
-    System.out.println("*Your was received by the sever | your move was NOT legitimate*");
+  public void failure(String board){
+    System.out.println("*Your response was received by the sever | your move was NOT legitimate*");
     System.out.println("PLEASE ENTER A LEGAL NUMBER BETWEEN 1-8");
-    play();
+    play(board);
   }
 
   public void finished(){
     System.out.println("*The other user disconnected, therefore you WIN (by default)*");
-    play();
   }
 
-  public void win(String board){
-    System.out.println("You Won!");
-    System.out.println("PLEASE ENTER A LEGAL NUMBER BETWEEN 1-8");
-    play();
+  public void win(){
+    System.out.println("YOU WON!");
   }
 
   public void lose(String board){
-    System.out.println("*Your was received by the sever | your move was NOT legitimate*");
-    System.out.println("PLEASE ENTER A LEGAL NUMBER BETWEEN 1-8");
-    play();
+    System.out.println("*YOU LOST!*");
+    System.out.println(board);
   }
 
   public void close(){
